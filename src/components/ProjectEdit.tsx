@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Project } from '@/lib/types/project';
 
-export default function ProjectEdit({ project }: { project: Project }) {
+export default function ProjectEdit({ project, onUpdate }: { project: Project; onUpdate: (project: Project) => void }) {
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState(project.title);
     const [description, setDescription] = useState(project.description);
@@ -17,6 +17,11 @@ export default function ProjectEdit({ project }: { project: Project }) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({title , description }),
         });
+
+        const updatedResponse = await fetch (`/api/projects/${project.id}`);
+        const updated = await updatedResponse.json();
+
+        onUpdate(updated);
         setIsEditing(false);
     }
 

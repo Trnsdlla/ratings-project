@@ -43,6 +43,12 @@ export default function ProjectsPage() {
                     // fetchProjects={fetchProjects}
                     selectedProject={selectedProject}
                     onClose={() => setSelectedProject(null)}
+                    onUpdate={(updated) => {
+                        setSelectedProject(updated)
+                        setProjects((previous) =>
+                            previous.map((p) => (p.id === updated.id ? updated : p))
+                        )
+                    }}
                 />
             )}
             <ProjectForm />

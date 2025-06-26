@@ -7,11 +7,12 @@ import ProjectEdit from "@/components/ProjectEdit";
 type Props = {
     selectedProject: Project;
     onClose: () => void;
+    onUpdate: (project: Project) => void;
     // projects: Project[];
     // fetchProjects: () => Promise<void>;
 };
 
-export default function ProjectDetails({ selectedProject, onClose }: Props) {
+export default function ProjectDetails({ selectedProject, onClose, onUpdate }: Props) {
     // const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
     // async function handleProjectSelect(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -40,7 +41,10 @@ export default function ProjectDetails({ selectedProject, onClose }: Props) {
                 <button onClick={onClose}>Close</button>
                 <h2>{selectedProject.title}</h2>
                 <p>{selectedProject.description}</p>
-                <ProjectEdit project={selectedProject} />
+                <ProjectEdit 
+                project={selectedProject}
+                onUpdate={onUpdate}
+                />
             </div>
         </div>
 
