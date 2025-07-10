@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import ProjectList from '@/components/ProjectList';
 import ProjectDetails from '@/components/ProjectDetails';
 import { Project } from '@/lib/types/project';
-import ProjectForm from '@/components/ProjectForm';
+import Image from 'next/image'
+import NewProjectModal from '@/components/NewProjectModal';
 
 
 export default function ProjectsPage() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+    const [showAddModal, setShowAddModal] = useState(false);
 
 
     async function fetchProjects() {
@@ -39,8 +41,6 @@ export default function ProjectsPage() {
             />
             {selectedProject && (
                 <ProjectDetails
-                    // projects={projects}
-                    // fetchProjects={fetchProjects}
                     selectedProject={selectedProject}
                     onClose={() => setSelectedProject(null)}
                     onUpdate={(updated) => {
@@ -51,9 +51,21 @@ export default function ProjectsPage() {
                     }}
                 />
             )}
-            <ProjectForm />
-
-
+            <button onClick={() => setShowAddModal(true)} className="add-project-button">
+                <Image
+                    src="/icons/add.png"
+                    alt="Add Project"
+                    width={40}
+                    height={40}
+                    className="add-project-img"
+                />
+            </button>
+            {showAddModal && (
+                <NewProjectModal
+                onClose={() => setShowAddModal(false)}
+                onCreated={fetchProjects}
+                />
+            )}
         </div>
     )
 }
