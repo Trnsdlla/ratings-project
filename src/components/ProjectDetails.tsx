@@ -2,7 +2,8 @@
 
 // import { useState } from "react";
 import { Project } from "@/lib/types/project";
-import ProjectEdit from "@/components/ProjectEdit";
+import { useState } from 'react';
+import Image from 'next/image';
 
 type Props = {
     selectedProject: Project;
@@ -13,69 +14,60 @@ type Props = {
 };
 
 export default function ProjectDetails({ selectedProject, onClose, onUpdate }: Props) {
-    // const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [title, setTitle] = useState(selectedProject.title);
+    const [description, setDescription] = useState(selectedProject.description);
 
-    // async function handleProjectSelect(e: React.ChangeEvent<HTMLSelectElement>) {
-    //     const id = e.target.value;
+    function handleEdit() {
+        setIsEditing(true);
+    }
 
-    //     if (!id) {
-    //         setSelectedProject(null);
-    //         return;
-    //     }
+    async function handleSubmit() {
+        await fetch(`/api/projects/${selectedProject.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, description }),
+        });
 
-    //     try {
-    //         const response = await fetch(`/api/projects/${id}`);
-    //         if (!response.ok) {
-    //             throw new Error("Failed to fetch project");
-    //         }
-    //         const projectData = await response.json();
-    //         setSelectedProject(projectData);
-    //     } catch (error) {
-    //         console.error("Failed to fetch single project:", error);
-    //     }
-    // }
+        const updatedResponse = await fetch(`/api/projects/${selectedProject.id}`);
+        const updated = await updatedResponse.json();
+
+        onUpdate(updated);
+        setIsEditing(false);
+    }
+
 
     return (
         <div className="modal-overlay">
             <div className="modal-content">
                 <button onClick={onClose}>Close</button>
-                <h2>{selectedProject.title}</h2>
-                <p>{selectedProject.description}</p>
-                <ProjectEdit 
-                project={selectedProject}
-                onUpdate={onUpdate}
+
+                <input
+                    className="editable-title"
+                    value={title}
+                    disabled={!isEditing}
+                    onChange={(e) => setTitle(e.target.value)}
+                    onBlur={handleSubmit}
                 />
+
+                <textarea
+                    className="editable-description"
+                    value={description}
+                    disabled={!isEditing}
+                    onChange={(e) => setDescription(e.target.value)}
+                    onBlur={handleSubmit}
+                />
+
+                <button onClick={handleEdit} className="edit-icon-button">
+                    <Image
+                        src="/icons/edit.png"
+                        alt="Edit"
+                        width={20}
+                        height={20}
+                        className="edit-button-img"
+                    />
+                </button>
             </div>
         </div>
-
-        // <div>
-        //     <label htmlFor="project-select">View Project:</label>
-        //     <select
-        //         id="project-select"
-        //         onChange={handleProjectSelect}
-        //         onClick={fetchProjects}
-        //     >
-        //         <option value="">Select a Project</option>
-        //         {projects.map((project) => (
-        //             <option value={project.id} key={project.id}>
-        //                 {project.title}
-        //             </option>
-        //         ))}
-        //     </select>
-        //     <div className="project-container">
-        //         {selectedProject && (
-        //             <div className="project-card">
-        //                 <h2 className="project-card-title">{selectedProject.title}</h2>
-        //                 <p className="project-card-description">
-        //                     {selectedProject.description}
-        //                 </p>
-        //                 <ProjectEdit project={selectedProject} />
-        //             </div>
-        //         )}
-        //     </div>
-        // </div>
     );
 }
-
-
-// div project card placed into the map method, it removed the red underline for project
