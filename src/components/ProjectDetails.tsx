@@ -1,52 +1,73 @@
-'use client'
+"use client";
 
-import { useState } from "react";
-import { Project } from '@/lib/types/project';
+// import { useState } from "react";
+import { Project } from "@/lib/types/project";
+import { useState } from 'react';
+import Image from 'next/image';
 
 type Props = {
-    projects: Project[];
-    fetchProjects: () => Promise<void>;
-}
-    
-export default function ProjectDetails({ projects, fetchProjects }: Props) {
-    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+    selectedProject: Project;
+    onClose: () => void;
+    onUpdate: (project: Project) => void;
+    // projects: Project[];
+    // fetchProjects: () => Promise<void>;
+};
 
-    async function handleProjectSelect(e: React.ChangeEvent<HTMLSelectElement>) {
-        const id = e.target.value;
-            
-        if (!id) {
-            setSelectedProject(null);
-            return;
-        }
+export default function ProjectDetails({ selectedProject, onClose, onUpdate }: Props) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [title, setTitle] = useState(selectedProject.title);
+    const [description, setDescription] = useState(selectedProject.description);
 
-        try {
-            const response = await fetch(`/api/projects/${id}`);
-            if(!response.ok) {
-                throw new Error ('Failed to fetch project');
-            }
-            const projectData = await response.json(); 
-            setSelectedProject(projectData);
-        } catch (error) {
-            console.error("Failed to fetch single project:", error)
-        }
+    function handleEdit() {
+        setIsEditing(true);
     }
 
-    return (
-        <div>
-            <label htmlFor="project-select">View Project:</label>
-            <select id="project-select" onChange={handleProjectSelect} onClick={fetchProjects}>
-                <option value="">Select a Project</option>
-                {projects.map(project => (
-                    <option value={project.id} key={project.id}>{project.title}</option>
-                ))}
-            </select>
+    async function handleSubmit() {
+        await fetch(`/api/projects/${selectedProject.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, description }),
+        });
 
-            {selectedProject && (
-                <div>
-                    <h2>{selectedProject.title}</h2>
-                    <p>{selectedProject.description}</p>
-                </div>
-            )}
+        const updatedResponse = await fetch(`/api/projects/${selectedProject.id}`);
+        const updated = await updatedResponse.json();
+
+        onUpdate(updated);
+        setIsEditing(false);
+    }
+
+
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <button onClick={onClose}>Close</button>
+
+                <input
+                    className="editable-title"
+                    value={title}
+                    disabled={!isEditing}
+                    onChange={(e) => setTitle(e.target.value)}
+                    onBlur={handleSubmit}
+                />
+
+                <textarea
+                    className="editable-description"
+                    value={description}
+                    disabled={!isEditing}
+                    onChange={(e) => setDescription(e.target.value)}
+                    onBlur={handleSubmit}
+                />
+
+                <button onClick={handleEdit} className="edit-icon-button">
+                    <Image
+                        src="/icons/edit.png"
+                        alt="Edit"
+                        width={20}
+                        height={20}
+                        className="edit-button-img"
+                    />
+                </button>
+            </div>
         </div>
-    )
+    );
 }

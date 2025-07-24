@@ -4,7 +4,6 @@
 export default function Home() {
     return (
         <div>
-            <h1>Ratings Project</h1>
         </div>
     )
 }
