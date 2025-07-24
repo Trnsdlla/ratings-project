@@ -6,6 +6,7 @@ import ProjectDetails from '@/components/ProjectDetails';
 import { Project } from '@/lib/types/project';
 import ProjectForm from '@/components/ProjectForm';
 
+
 export default function ProjectsPage() {
     const [projects, setProjects] = useState<Project[]>([]);
 
@@ -28,6 +29,8 @@ export default function ProjectsPage() {
             <ProjectList projects={projects} fetchProjects={fetchProjects}/>
             <ProjectDetails projects={projects} fetchProjects={fetchProjects}/>
             <ProjectForm />
+
+           
         </div>
     )
 }

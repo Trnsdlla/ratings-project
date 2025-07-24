@@ -12,7 +12,7 @@ export default function ProjectEdit({ project }: { project: Project }) {
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        await fetch('/api/projects/${project.id}', {
+        await fetch(`/api/projects/${project.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({title , description }),
@@ -21,7 +21,7 @@ export default function ProjectEdit({ project }: { project: Project }) {
     }
 
     return (
-        <div>
+        <div className='project-container'>
             <button onClick={handleEdit}>Edit</button>
             {isEditing && (
                 <form onSubmit={handleSubmit}>
@@ -33,3 +33,5 @@ export default function ProjectEdit({ project }: { project: Project }) {
         </div>
     )
 }
+
+// make into input instead of generate a form 
