@@ -33,12 +33,25 @@ export default function ProjectsPage() {
 
     return (
         <div>
-            <h1>Projects</h1>
+            <div className='projects-header-temporary'>
+                <h2 className='projects-title'>Projects</h2>
+                <button onClick={() => setShowAddModal(true)} className="add-project-button">
+                    <Image
+                        src="/icons/add-project.svg"
+                        alt="Add Project"
+                        width={24}
+                        height={24}
+                        className="add-project-img"
+                    />
+                </button>
+            </div>
+
             <ProjectList
                 projects={projects}
                 fetchProjects={fetchProjects}
                 setSelectedProject={setSelectedProject}
             />
+
             {selectedProject && (
                 <ProjectDetails
                     selectedProject={selectedProject}
@@ -51,19 +64,11 @@ export default function ProjectsPage() {
                     }}
                 />
             )}
-            <button onClick={() => setShowAddModal(true)} className="add-project-button">
-                <Image
-                    src="/icons/add.png"
-                    alt="Add Project"
-                    width={40}
-                    height={40}
-                    className="add-project-img"
-                />
-            </button>
+
             {showAddModal && (
                 <NewProjectModal
-                onClose={() => setShowAddModal(false)}
-                onCreated={fetchProjects}
+                    onClose={() => setShowAddModal(false)}
+                    onCreated={fetchProjects}
                 />
             )}
         </div>

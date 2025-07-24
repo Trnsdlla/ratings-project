@@ -11,16 +11,14 @@ type Props = {
 export default function ProjectList({ projects, setSelectedProject }: Props) {
 
     return (
-        <div className="project-grid">
-            <div className='all-projects-container'>
-                <div className="project-container">
-                    {projects.map((project) => (
-                        <div key={project.id} className="project-card" onClick={() => setSelectedProject(project)}>
-                            <h2 className="project-card-title">{project.title}</h2>
-                            <p className="project-card-description">{project.description}</p>
-                        </div>
-                    ))}
-                </div>
+        <div className='projects-section'>
+            <div className="project-container">
+                {projects.map((project) => (
+                    <div key={project.id} className="project-card" onClick={() => setSelectedProject(project)}>
+                        <h2 className="project-card-title">{project.title}</h2>
+                        <p className="project-card-description">{project.description}</p>
+                    </div>
+                ))}
             </div>
         </div>
     );

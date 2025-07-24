@@ -1,6 +1,6 @@
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -43,14 +43,33 @@ a {
 
 .project-container {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
 }
 
 .project-card {
-  border: 1px solid #ccc;
+  /* background: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem;
+  width: 300px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease; */
+  border: none;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
   padding: 1rem;
   border-radius: 8px;
-  margin-bottom: 1rem;
-  max-width: 100%;
+  width: 300px;
+  background: #d1fadf;
+  transition: transform 0.2s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  /* box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-3px); */
 }
 
 .project-card-title {
@@ -88,7 +107,7 @@ a {
 }
 
 .modal-content {
-  background: rgb(220, 219, 219);
+  background: #f9f9f9;
   color: black;
   padding: 2rem;
   border-radius: 8px;
@@ -131,4 +150,127 @@ a {
 .editable-description:focus {
   background: #aba6a6;
   cursor: text;
+}
+
+/* sidebar hamburger */
+
+.hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  height: 100vh;
+  width: 250px;
+  background: #fff;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  padding: 1rem;
+  transition: left 0.3s ease;
+  z-index: 150;
+}
+.sidebar.open {
+  left: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  gap: 1rem;
+  background: var(--background);
+  border-bottom: 1px solid #eaeaea;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.main-content {
+  padding: 1.5rem;
+  flex: 1;
+  background: #fff;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.page-login {
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout {
+  flex: 1;
+  display: flex;
+}
+
+.website-footer {
+  padding: 1rem;
+  background: #f4f4f4;
+  text-align: center;
+  font-size: 0.875rem;
+  border-top: 1px solid #ddd;
+}
+
+/* projects page */
+
+.projects-section {
+  padding: 2rem 1rem;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.add-project-button {
+  background-color: #d1fadf;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.add-project-img {
+  transition: filter 0.2s ease;
+}
+
+.add-project-button:hover {
+  background-color: #c4edd1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.add-project-button:hover .add-project-img {
+  filter: brightness(0.4);
+}
+
+.projects-header-temporary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
