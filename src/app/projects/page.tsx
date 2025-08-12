@@ -1,18 +1,24 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProjectList from '@/components/ProjectList';
 import ProjectDetails from '@/components/ProjectDetails';
 import { Project } from '@/lib/types/project';
+import Image from 'next/image'
+import NewProjectModal from '@/components/NewProjectModal';
+
 
 export default function ProjectsPage() {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+    const [showAddModal, setShowAddModal] = useState(false);
+
 
     async function fetchProjects() {
         try {
             const response = await fetch('/api/projects');
-            if(!response.ok) {
-                throw new Error ('Failed to fetch projects')
+            if (!response.ok) {
+                throw new Error('Failed to fetch projects')
             }
             const data = await response.json();
             setProjects(data);
@@ -21,11 +27,50 @@ export default function ProjectsPage() {
         }
     }
 
+    useEffect(() => {
+        fetchProjects();
+    }, []);
+
     return (
         <div>
-            <h1>Projects</h1>
-            <ProjectList projects={projects} fetchProjects={fetchProjects}/>
-            <ProjectDetails projects={projects} fetchProjects={fetchProjects}/>
+            <div className='projects-header-temporary'>
+                <h2 className='projects-title'>Projects</h2>
+                <button onClick={() => setShowAddModal(true)} className="add-project-button">
+                    <Image
+                        src="/icons/add-project.svg"
+                        alt="Add Project"
+                        width={24}
+                        height={24}
+                        className="add-project-img"
+                    />
+                </button>
+            </div>
+
+            <ProjectList
+                projects={projects}
+                fetchProjects={fetchProjects}
+                setSelectedProject={setSelectedProject}
+            />
+
+            {selectedProject && (
+                <ProjectDetails
+                    selectedProject={selectedProject}
+                    onClose={() => setSelectedProject(null)}
+                    onUpdate={(updated) => {
+                        setSelectedProject(updated)
+                        setProjects((previous) =>
+                            previous.map((p) => (p.id === updated.id ? updated : p))
+                        )
+                    }}
+                />
+            )}
+
+            {showAddModal && (
+                <NewProjectModal
+                    onClose={() => setShowAddModal(false)}
+                    onCreated={fetchProjects}
+                />
+            )}
         </div>
     )
 }

@@ -1,37 +1,24 @@
 'use client'
 
-import { useState } from "react";
 import { Project } from '@/lib/types/project';
 
 type Props = {
     projects: Project[];
     fetchProjects: () => Promise<void>;
+    setSelectedProject: (project: Project) => void;
 }
 
-export default function ProjectList({ projects, fetchProjects }: Props) {
-    const [showAllProjects, setShowAllProjects] = useState(false);
-
-    async function handleClick() {
-        if(!showAllProjects) await fetchProjects();
-        setShowAllProjects(isVisible => !isVisible)
-    }
+export default function ProjectList({ projects, setSelectedProject }: Props) {
 
     return (
-        <div>
-            <div className="all-projects-button">
-                <button onClick={handleClick}>All Projects</button>
-            </div>
-            <div className='all-projects-container'>
-                {showAllProjects && (
-                    <div>
-                        {projects.map((project) => (
-                            <div key={project.id}>
-                                <h2>{project.title}</h2>
-                                <p>{project.description}</p>
-                            </div>
-                        ))}
+        <div className='projects-section'>
+            <div className="project-container">
+                {projects.map((project) => (
+                    <div key={project.id} className="project-card" onClick={() => setSelectedProject(project)}>
+                        <h2 className="project-card-title">{project.title}</h2>
+                        <p className="project-card-description">{project.description}</p>
                     </div>
-                )}
+                ))}
             </div>
         </div>
     );
