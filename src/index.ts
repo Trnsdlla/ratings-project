@@ -67,7 +67,7 @@ async function main() {
     })
     .where(eq(usersTable.email, user.email));
   console.log('User info updated!')
-  // await db.delete(usersTable).where(eq(usersTable.email, user.email));
-  // console.log('User deleted!')
+  await db.delete(usersTable).where(eq(usersTable.email, user.email));
+  console.log('User deleted!')
 }
 main();
