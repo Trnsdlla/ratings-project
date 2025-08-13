@@ -3,6 +3,10 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { eq } from 'drizzle-orm';
 import { usersTable } from './db/schema';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import { sql } from 'drizzle-orm';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const pool = new Pool({
   host: process.env.POSTGRES_HOST!,
@@ -15,7 +19,30 @@ const pool = new Pool({
 
 const db = drizzle(pool);
 
+const journalPath = path.join(process.cwd(), 'drizzle', 'meta', '_journal.json');
+if (fs.existsSync(journalPath)) {
+  (async () => {
+    try {
+      await migrate(db, { migrationsFolder: './drizzle' });
+      console.log('Migrations applied');
+    } catch (e) {
+      console.error('Migration step failed:', e);
+    }
+  })();
+} else {
+  console.log('No migrations found (skipping migrate). Run `npx drizzle-kit generate` to create them.');
+}
+
 async function main() {
+  await db.execute(sql`
+    create table if not exists "users" (
+      id integer generated always as identity primary key,
+      name varchar(255) not null,
+      age integer not null,
+      email varchar(255) not null unique
+    );
+  `);
+
   const user: typeof usersTable.$inferInsert = {
     name: 'John',
     age: 30,
