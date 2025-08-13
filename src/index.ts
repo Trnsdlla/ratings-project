@@ -1,9 +1,19 @@
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
 import { eq } from 'drizzle-orm';
 import { usersTable } from './db/schema';
 
-const db = drizzle(process.env.POSTGRES_URL!);
+const pool = new Pool({
+  host: process.env.POSTGRES_HOST!,
+  port: Number(process.env.POSTGRES_PORT || 5432),
+  user: process.env.POSTGRES_USER!,
+  password: process.env.POSTGRES_PASSWORD!,
+  database: process.env.POSTGRES_DATABASE!,
+  ssl: { rejectUnauthorized: false },
+});
+
+const db = drizzle(pool);
 
 async function main() {
   const user: typeof usersTable.$inferInsert = {
