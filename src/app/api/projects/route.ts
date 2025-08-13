@@ -1,27 +1,44 @@
 import { NextResponse } from 'next/server';
-import { dummyProjects } from '@/lib/data/projects';
+import { projectsTable } from '@/db/schema';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
 
+const pool = new Pool({
+  host: process.env.POSTGRES_HOST!,
+  port: Number(process.env.POSTGRES_PORT || 5432),
+  user: process.env.POSTGRES_USER!,
+  password: process.env.POSTGRES_PASSWORD!,
+  database: process.env.POSTGRES_DATABASE!,
+  ssl: { rejectUnauthorized: false },
+});
+const db = drizzle(pool);
 
 export async function GET() {
-  return NextResponse.json(dummyProjects);
+  try {
+    const rows = await db.select().from(projectsTable);
+    return NextResponse.json(rows, { status: 200 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
-    // const body = await request.json();
-    // const { title, description } = body;
+    const { title, description } = await request.json();
 
-    // const newProject = {
-    //   // id: dummyProjects.length + 1,
-    //   title: title,
-    //   description: description,
-    // };
+    if (!title || !description) {
+      return NextResponse.json({ error: 'title and description are required' }, { status: 400 });
+    }
 
-    // dummyProjects.push(newProject);
+    const inserted = await db
+      .insert(projectsTable)
+      .values({ title, description })
+      .returning();
 
-    // return NextResponse.json({message: 'Project created', project: newProject });
+    return NextResponse.json(inserted[0], { status: 201 });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unkown error';
-    return NextResponse.json({ error: message });
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
