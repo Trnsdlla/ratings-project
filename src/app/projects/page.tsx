@@ -18,6 +18,8 @@ export default function ProjectsPage() {
         try {
             const response = await fetch('/api/projects');
             if (!response.ok) {
+                const body = await response.text(); // <-- see real reason
+                console.error('GET /api/projects failed:', response.status, body);
                 throw new Error('Failed to fetch projects')
             }
             const data = await response.json();
