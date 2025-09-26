@@ -115,7 +115,7 @@ function getSupabase() {
 }
 
 // GET /api/projects
-export async function GET() {
+export async function GET() { 
   try {
     const supabase = getSupabase();
     const { data, error } = await supabase
@@ -134,7 +134,7 @@ export async function GET() {
   } catch (e: any) {
     return NextResponse.json({ error: e?.message ?? 'Unknown error' }, { status: 500 });
   }
-}
+} 
 
 // POST /api/projects
 export async function POST(request: Request) {

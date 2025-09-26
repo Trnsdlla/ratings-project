@@ -46,11 +46,13 @@
 import { NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supaBaseServer';
 
+export const runtime = 'nodejs';
+
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  context: any
 ) {
-  const id = Number(params.id);
+  const id = Number((context as { params: { id: string } }).params.id);
   if (Number.isNaN(id)) return NextResponse.json({ error: 'invalid id' }, { status: 400 });
 
   const supabase = supabaseServer();
@@ -67,9 +69,9 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  context: any
 ) {
-  const id = Number(params.id);
+  const id = Number((context as { params: { id: string } }).params.id);
   if (Number.isNaN(id)) return NextResponse.json({ error: 'invalid id' }, { status: 400 });
 
   const body = await req.json();
