@@ -52,6 +52,16 @@ async function main() {
     );
   `);
 
+  await db.execute(sql`
+  create table if not exists "submissions" (
+    id integer generated always as identity primary key,
+    project_id integer not null references projects(id) on delete cascade,
+    content text not null,
+    created_at timestamptz not null default now()
+  );
+`);
+
+
   const randomEmailChar = Math.round(Math.random() * 1000)
   const user: typeof usersTable.$inferInsert = {
     name: 'John',
