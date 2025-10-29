@@ -274,3 +274,18 @@ a {
   justify-content: space-between;
   align-items: center;
 }
+
+/* SUBMISSION CSS */
+
+.submission-title {
+  margin: 1rem 0;
+}
+
+.submission-form {
+  margin-top: 0.75 rem;
+}
+
+.modal-container {
+  display: flex;
+  flex-direction: column;
+}
